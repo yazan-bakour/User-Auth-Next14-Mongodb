@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
   try {
-    const { email, password } = await request.json();
+    const { email, password, role } = await request.json();
 
     const bcrypt = require("bcrypt");
 
@@ -14,7 +14,7 @@ export async function POST(request: Request) {
 
     await db
       .collection("users")
-      .insertOne({ email: email, password: hashedPassword });
+      .insertOne({ email: email, password: hashedPassword, role: role });
 
     return NextResponse.json({ success: "Account created" }, { status: 200 })
   } catch (error: any) {

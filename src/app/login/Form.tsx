@@ -60,13 +60,13 @@ const LoginForm = () => {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 flex flex-col justify-center items-center w-[360px] m-auto p-2">
         <h1 className="text-2xl font-semibold">Login</h1>
         <FormField
           control={form.control}
           name="email"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className="w-full">
               <FormLabel>Email</FormLabel>
               <FormControl>
                 <Input placeholder="example@email.com" {...field} />
@@ -79,7 +79,7 @@ const LoginForm = () => {
           control={form.control}
           name="password"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className="w-full">
               <FormLabel>Password</FormLabel>
               <FormControl>
                 <Input type="password" {...field} />

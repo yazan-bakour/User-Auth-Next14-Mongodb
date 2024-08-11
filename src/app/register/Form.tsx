@@ -9,7 +9,6 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  // FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -18,7 +17,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import Link from "next/link";
-import { redirect } from "next/navigation";
 import { useRouter } from "next/navigation";
 
 const formSchema = z
@@ -32,6 +30,7 @@ const formSchema = z
       .max(300, {
         message: "Password can't be longer than 300 characters.",
       }),
+    role: z.string().min(1, { message: "Select option" }),
     password: z
       .string()
       .min(6, { message: "Password has to be at least 6 characters long." }),
@@ -74,13 +73,13 @@ const RegisterForm = () => {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 flex flex-col justify-center items-center w-[360px] m-auto p-2">
         <h1 className="text-2xl font-semibold">Registration</h1>
         <FormField
           control={form.control}
           name="email"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className="w-full">
               <FormLabel>Email</FormLabel>
               <FormControl>
                 <Input placeholder="example@email.com" {...field} />
@@ -91,12 +90,29 @@ const RegisterForm = () => {
         />
         <FormField
           control={form.control}
+          name="role"
+          render={({ field }) => (
+            <FormItem className="flex flex-col w-full">
+              <FormLabel>Choose your role</FormLabel>
+              <FormControl>
+                <select {...field} className="p-2 rounded-md">
+                  <option value="admin">Role 1</option>
+                  <option value="cleaner">Role 2</option>
+                  <option value="manager">Role 3</option>
+                </select>
+              </FormControl>
+              <FormMessage className="text-red-500" />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
           name="password"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className="w-full">
               <FormLabel>Password</FormLabel>
               <FormControl>
-                <Input type="password" {...field} />
+                <Input className="w-full self-start" type="password" {...field} />
               </FormControl>
               <FormMessage className="text-red-500" />
             </FormItem>
@@ -106,7 +122,7 @@ const RegisterForm = () => {
           control={form.control}
           name="confirmPassword"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className="w-full">
               <FormLabel>Confirm Password</FormLabel>
               <FormControl>
                 <Input type="password" {...field} />

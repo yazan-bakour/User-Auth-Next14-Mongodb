@@ -32,13 +32,30 @@ const formSchema = z.object({
     .max(300, {
       message: "Password can't be longer than 300 characters.",
     }),
+  password: z
+    .string()
+    .min(6, { message: "Password has to be at least 6 characters long." }),
+  confirmPassword: z.string().min(6, {
+    message: "Confirm-Password has to be at least 6 characters long.",
+  }),
+})
+.superRefine(({ confirmPassword, password }, ctx) => {
+  if (confirmPassword !== password) {
+    ctx.addIssue({
+      code: "custom",
+      message: "The passwords did not match",
+      path: ["confirmPassword"],
+    });
+  }
 });
 
-const DashboardForm = ({ email }: { email: string }) => {
+const DashboardForm = ({ email, password, confirmPassword }: { email: string, password: string, confirmPassword: string }) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       email,
+      password,
+      confirmPassword
     },
   });
 
@@ -62,7 +79,9 @@ const DashboardForm = ({ email }: { email: string }) => {
         ...session,
         user: {
             ...session?.user,
-            email: values.email
+            email: values.email,
+            password: values.password,
+            confirmPassword: values.confirmPassword
         }
     })
 
@@ -88,7 +107,33 @@ const DashboardForm = ({ email }: { email: string }) => {
             </FormItem>
           )}
         />
-        <Button variant="outline" className="bg-green-500/30 mr-5" type="submit">Change email</Button>
+        <FormField
+          control={form.control}
+          name="password"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Password</FormLabel>
+              <FormControl>
+                <Input placeholder="New password" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="confirmPassword"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Confirm password</FormLabel>
+              <FormControl>
+                <Input placeholder="Confirm new password" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <Button variant="outline" className="bg-green-500/30 mr-5" type="submit">Change</Button>
         <Link
           className="border py-2.5 px-5 rounded bg-green-500/30 mr-5" 
           href={"/"}>
